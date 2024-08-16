@@ -3,7 +3,6 @@ let express = require("express");
 require("dotenv").config();
 let path = require("path");
 let cookieParser = require("cookie-parser");
-let logger = require("morgan");
 var cors = require("cors");
 let indexRouter = require("./routes/index");
 let productCategoryRouter = require("./routes/product_category_router");
@@ -18,8 +17,6 @@ let cartRouter = require("./routes/cart_router");
 
 let app = express();
 app.use(cors());
-
-app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
