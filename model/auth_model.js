@@ -25,8 +25,6 @@ exports.login = async (req, res, query) => {
       throw new Error("User not found"); // Specific error message
     }
   } catch (err) {
-    console.error({ err: err });
-
     if (err.message) {
       // Check for Vercel-specific error codes if available
       // Handle Vercel errors here (e.g., display user-friendly message)

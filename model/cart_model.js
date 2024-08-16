@@ -10,7 +10,7 @@ exports.getData = async (req, res, query) => {
     try {
       const result = await client.query(query);
 
-      if (result.rows.length > 0) {
+      if (result.rows) {
         const response = result.rows;
         responseData(res, 200, "SUCCESS", response); // Assuming responseData is defined
       } else {
@@ -34,7 +34,7 @@ exports.getDataById = async (req, res, query) => {
     try {
       const result = await client.query(query);
 
-      if (result.rows.length > 0) {
+      if (result.rows) {
         const response = result.rows;
         responseData(res, 200, "SUCCESS", response); // Assuming responseData is defined
       } else {
