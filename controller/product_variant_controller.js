@@ -14,6 +14,7 @@ exports.getData = (request, result, next) => {
   const query = `
       SELECT * 
       FROM ${tableName}
+      ORDER BY id DESC
     `;
 
   getProduct(req, result, query);
@@ -32,7 +33,6 @@ exports.insertProduct = async (request, result, next) => {
   const req = { ...request?.body };
   let id;
   await generateId(tableName).then((val) => {
-    console.log({ val: val });
     id = val;
   });
   const reqPayload = ` 

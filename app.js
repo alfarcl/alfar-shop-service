@@ -1,9 +1,10 @@
 let createError = require("http-errors");
 let express = require("express");
+require("dotenv").config();
 let path = require("path");
 let cookieParser = require("cookie-parser");
 let logger = require("morgan");
-var cors = require('cors')
+var cors = require("cors");
 let indexRouter = require("./routes/index");
 let productCategoryRouter = require("./routes/product_category_router");
 let productRouter = require("./routes/product_router");
@@ -12,9 +13,11 @@ let accountRoleRouter = require("./routes/account_role_router");
 let accountRouter = require("./routes/account_router");
 let transactionRouter = require("./routes/transaction_router");
 let authRouter = require("./routes/auth_router");
+let cartRouter = require("./routes/cart_router");
+
 
 let app = express();
-app.use(cors())
+app.use(cors());
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -30,6 +33,7 @@ app.use("/api/account-role", accountRoleRouter);
 app.use("/api/account", accountRouter);
 app.use("/api/transaction", transactionRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/cart", cartRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

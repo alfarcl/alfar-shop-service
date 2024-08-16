@@ -1,20 +1,19 @@
-const { ExecuteSQL } = require("../config/database");
+const { pool } = require("../config/database");
 const {
   responseData,
   responseDataInsert,
 } = require("../utils/responseHandler");
 
-exports.getData = (req, res, query) => {
-  ExecuteSQL(query)
-    .then((db) => {
-      const data = db.recordsets[0];
-      responseData(res, 200, "SUCCESS", data);
-    })
-    .catch((err) => {
-      return res
-        .status(500)
-        .json({ message: "Gagal menemukan data!", error: err });
-    });
+exports.getData = async (req, res, query) => {
+  try {
+    const client = await pool.connect();
+    const result = await client.query(query);
+    const response = result.rows;
+    responseData(res, 200, "SUCCESS", response);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json("Gagal menemukan data!");
+  }
 };
 
 exports.getDataById = (req, res, query) => {

@@ -1,29 +1,12 @@
-var sql = require("mssql");
+const { Pool } = require("pg");
 
-var config = {
-    user: "sa",
-    password: "Jangandibuka02",
-    server: "localhost",
-    database: "alfarshopdb",
-    options: {
-        enableArithAbort: true,
-        trustServerCertificate: true,
-    },
-};
+const pool = new Pool({
+  user: process.env.POSTGRES_USER,
+  host: process.env.POSTGRES_HOST,
+  database: process.env.POSTGRES_DATABASE,
+  password: process.env.POSTGRES_PASSWORD,
+  port: 5432,
+  connectionString: process.env.POSTGRES_URL,
+});
 
-function ExecuteSQL(query) {
-    return new Promise((resolve, reject) => {
-        sql.connect(config, (err, db) => {
-            if (err) reject(err);
-            var request = new sql.Request();
-            request.query(query, (err, db) => {
-                if (err) reject(err);
-                resolve(db);
-            });
-        });
-    });
-}
-
-module.exports = {
-    ExecuteSQL: ExecuteSQL,
-};
+module.exports = { pool };

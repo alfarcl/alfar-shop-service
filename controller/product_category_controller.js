@@ -32,7 +32,7 @@ exports.insertProduct = async (request, result, next) => {
   const req = { ...request?.body };
   let id;
   await generateId(tableName).then((val) => {
-    console.log({ val: val });
+
     id = val;
   });
   const reqPayload = `

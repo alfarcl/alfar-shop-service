@@ -10,7 +10,7 @@ const accessValidation = (req, res, next) => {
   }
 
   const token = authorization.split(" ")[1];
-  const secret = 'alfarcl';
+  const secret = process.env.JWT_SECRET_KEY;
 
   try {
     const jwtDecode = jwt.verify(token, secret);
