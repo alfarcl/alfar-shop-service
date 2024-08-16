@@ -1,73 +1,116 @@
-const { ExecuteSQL } = require("../config/database");
+const { pool } = require("../config/database");
 const {
   responseData,
   responseDataInsert,
 } = require("../utils/responseHandler");
 
-exports.getData = (req, res, query) => {
-  ExecuteSQL(query)
-    .then((db) => {
-      const data = db.recordsets[0];
-      responseData(res, 200, "SUCCESS", data);
-    })
-    .catch((err) => {
-      return res
-        .status(500)
-        .json({ message: "Gagal menemukan data!", error: err });
-    });
+exports.getData = async (req, res, query) => {
+  try {
+    const client = await pool.connect();
+    try {
+      const result = await client.query(query);
+
+      if (result.rows.length > 0) {
+        const response = result.rows;
+        responseData(res, 200, "SUCCESS", response); // Assuming responseData is defined
+      } else {
+        res.status(404).json({ message: "Gagal menemukan data!" });
+      }
+    } catch (err) {
+      console.error("Error executing query:", err);
+      res.status(500).json({ message: "Internal server error", error: err });
+    } finally {
+      client.release();
+    }
+  } catch (err) {
+    console.error("Error connecting to database:", err);
+    res.status(500).json({ message: "Database connection error", error: err });
+  }
 };
 
-exports.getDataById = (req, res, query) => {
-  ExecuteSQL(query)
-    .then((db) => {
-      const data = db.recordsets[0];
-      responseData(res, 200, "SUCCESS", data);
-    })
-    .catch((err) => {
-      return res.status(500).json({
-        message: `Gagal menemukan data dengan id (${req.id}) !`,
-        error: err,
-      });
-    });
+exports.getDataById = async (req, res, query) => {
+  try {
+    const client = await pool.connect();
+    try {
+      const result = await client.query(query);
+
+      if (result.rows.length > 0) {
+        const response = result.rows;
+        responseData(res, 200, "SUCCESS", response); // Assuming responseData is defined
+      } else {
+        res.status(404).json({ message: "Gagal menemukan data!" });
+      }
+    } catch (err) {
+      console.error("Error executing query:", err);
+      res.status(500).json({ message: "Internal server error", error: err });
+    } finally {
+      client.release();
+    }
+  } catch (err) {
+    console.error("Error connecting to database:", err);
+    res.status(500).json({ message: "Database connection error", error: err });
+  }
 };
 
-exports.insertData = (req, res, query) => {
-  ExecuteSQL(query)
-    .then(() => {
-      responseDataInsert(res, 200, "Berhasil menambahkan data!");
-    })
-    .catch((err) => {
-      return res
-        .status(500)
-        .json({ message: "Gagal menambahkan data!", error: err });
-    });
+exports.insertData = async (req, res, query) => {
+  try {
+    const client = await pool.connect();
+    const result = await client.query(query);
+    responseDataInsert(res, 200, "Berhasil menambahkan data!");
+  } catch (err) {
+    console.error(err); // Log the error for debugging
+
+    if (err instanceof PoolError) {
+      // Handle pool connection errors
+      return res.status(500).json({ message: "Error connecting to database" });
+    } else if (err instanceof QueryError) {
+      // Handle query execution errors
+      return res.status(500).json({ message: "Error executing query" });
+    } else {
+      // Handle other unexpected errors
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  }
 };
 
-exports.deleteData = (req, res, query) => {
-  ExecuteSQL(query)
-    .then(() => {
-      responseDataInsert(res, 200, "Berhasil menghapus data!");
-    })
-    .catch((err) => {
-      return res
-        .status(500)
-        .json({ message: "Gagal menghapus data!", error: err });
-    });
+exports.deleteData = async (req, res, query) => {
+  try {
+    const client = await pool.connect();
+    const result = await client.query(query);
+    responseDataInsert(res, 200, "Berhasil menghapus data!");
+  } catch (err) {
+    console.error(err); // Log the error for debugging
+
+    if (err instanceof PoolError) {
+      // Handle pool connection errors
+      return res.status(500).json({ message: "Error connecting to database" });
+    } else if (err instanceof QueryError) {
+      // Handle query execution errors
+      return res.status(500).json({ message: "Error executing query" });
+    } else {
+      // Handle other unexpected errors
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  }
 };
 
-exports.updateData = (req, res, query) => {
-  let msg = "Gagal mengubah data!"
-  ExecuteSQL(query)
-    .then((db) => {
-      if(db.rowsAffected[0] === 0) {
-        msg="Tidak dapat menemukan data untuk diubah";
-        throw err;
-      };
-      responseDataInsert(res, 200, "Berhasil mengubah data!");
-    })
-    .catch((err) => {
-      return res
-        .status(500)
-        .json({ message: msg, error: err });
-    });
+exports.updateData = async (req, res, query) => {
+  try {
+    const client = await pool.connect();
+    const result = await client.query(query);
+    responseDataInsert(res, 200, "Berhasil mengedit data!");
+  } catch (err) {
+    console.error(err); // Log the error for debugging
+
+    if (err instanceof PoolError) {
+      // Handle pool connection errors
+      return res.status(500).json({ message: "Error connecting to database" });
+    } else if (err instanceof QueryError) {
+      // Handle query execution errors
+      return res.status(500).json({ message: "Error executing query" });
+    } else {
+      // Handle other unexpected errors
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  }
 };
